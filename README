@@ -1,0 +1,41 @@
+# Flood Alert Automation
+
+This Python project automates flood warning alerts by scraping river water level data from the Department of Hydrology and Meteorology (DHM) River Watch website and sending WhatsApp alerts using the Twilio API. It demonstrates how automation and open data can support disaster resilience and early warning systems (EWS).
+
+---
+
+## Features
+
+- Scrapes live river water level data from DHM’s website (no public API available)  
+- Monitors specific river stations, e.g., Budhikhola at Duhabi station (station index: 696.6)  
+- Compares current water levels against warning and danger thresholds  
+- Sends automated WhatsApp alerts when water levels exceed these thresholds  
+- Supports dummy threshold values for testing and demonstration  
+
+---
+
+## Tools and Technologies Used
+
+- **Python** — Core programming language  
+- **Selenium** — Open-source web automation and scraping tool  
+- **webdriver-manager** — Automatic driver management for Selenium  
+- **Twilio API for WhatsApp** — Cloud communication platform to send WhatsApp messages  
+- **Git & GitHub** — Version control and code hosting platform  
+
+---
+
+## Setup Instructions
+
+### Prerequisites
+
+- Python 3.7 or higher installed  
+- Twilio account with WhatsApp sandbox configured  
+- Google Chrome browser installed (compatible with ChromeDriver)  
+
+### Installation
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/yourusername/flood-alert-automation.git
+   cd flood-alert-automation
