@@ -13,7 +13,7 @@ TWILIO_AUTH_TOKEN = 'YOUR_AUTH_TOKEN_HERE'
 TWILIO_WHATSAPP_FROM = 'whatsapp:+14155238886'
 
 # Your WhatsApp number (with country code)
-ALERT_WHATSAPP_TO = 'whatsapp:+97798XXXXXXXX'  # replace with your WhatsApp number
+ALERT_WHATSAPP_TO = 'whatsapp:+97798XXXXXXXX'  # Replace with your WhatsApp number
 
 # Initialize Twilio client
 twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
@@ -23,8 +23,8 @@ service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service)
 
 # Optional: testing override values to demo alerts (set to None to disable)
-TEST_CURRENT_LEVEL = None  # e.g., 85.0
-TEST_WARNING_LEVEL = None  # e.g., 84.5
+TEST_CURRENT_LEVEL = None  # Example: 85.0 to force alert
+TEST_WARNING_LEVEL = None  # Example: 84.5 to force alert
 
 def send_whatsapp(message):
     msg = twilio_client.messages.create(
@@ -48,21 +48,33 @@ try:
         if len(cols) < 10:
             continue
 
+        # Column mapping based on your table:
+        # 0 - S.N
+        # 1 - Basin Name
+        # 2 - Station Index
+        # 3 - Station Name
+        # 4 - District
+        # 5 - Current Level (Water Level m)
+        # 6 - Warning Level (m)
+        # 7 - Danger Level (m)
+        # 8 - Trend
+        # 9 - Status
+
         station_index = cols[2].text.strip()
         if station_index == '696.6':  # Budhikhola at Duhabi
             river_name = cols[3].text.strip()
-            timestamp = cols[4].text.strip()
-            district = cols[5].text.strip()
-            current_level = cols[5].text.strip()
-            warning_level = cols[6].text.strip()
-            danger_level = cols[7].text.strip()
+            district = cols[4].text.strip()
+            current_level_text = cols[5].text.strip()
+            warning_level_text = cols[6].text.strip()
+            danger_level_text = cols[7].text.strip()
+            trend = cols[8].text.strip()
             status = cols[9].text.strip()
 
             # Parse numeric levels, use test override if set
             try:
-                current_val = float(TEST_CURRENT_LEVEL) if TEST_CURRENT_LEVEL is not None else float(current_level.replace(',', '').strip())
-                warning_val = float(TEST_WARNING_LEVEL) if TEST_WARNING_LEVEL is not None else float(warning_level.replace(',', '').strip())
-                danger_val = float(danger_level.replace(',', '').strip())
+                current_val = float(TEST_CURRENT_LEVEL) if TEST_CURRENT_LEVEL is not None else float(current_level_text.replace(',', '').strip())
+                warning_val = float(TEST_WARNING_LEVEL) if TEST_WARNING_LEVEL is not None else float(warning_level_text.replace(',', '').strip())
+                danger_val = float(danger_level_text.replace(',', '').strip())
             except ValueError:
                 print("Invalid numeric data, skipping.")
                 continue
@@ -74,9 +86,10 @@ try:
                     f"🚨 *DANGER ALERT* 🚨\n"
                     f"Station: {station_index}\n"
                     f"River: {river_name}\n"
-                    f"Time: {timestamp}\n"
+                    f"District: {district}\n"
                     f"Current Level: {current_val} m\n"
                     f"Danger Level: {danger_val} m\n"
+                    f"Trend: {trend}\n"
                     f"Status: {alert_status}\n"
                     f"Details: https://hydrology.gov.np/#/river_watch"
                 )
@@ -86,9 +99,10 @@ try:
                     f"⚠️ Warning Alert ⚠️\n"
                     f"Station: {station_index}\n"
                     f"River: {river_name}\n"
-                    f"Time: {timestamp}\n"
+                    f"District: {district}\n"
                     f"Current Level: {current_val} m\n"
                     f"Warning Level: {warning_val} m\n"
+                    f"Trend: {trend}\n"
                     f"Status: {alert_status}\n"
                     f"Details: https://hydrology.gov.np/#/river_watch"
                 )
